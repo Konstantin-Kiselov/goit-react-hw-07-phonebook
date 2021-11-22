@@ -1,24 +1,26 @@
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import * as actions from './contacts-actions';
 
 axios.defaults.baseURL = 'https://619aa3d027827600174452d9.mockapi.io';
 
-const fetchContacts = () => async dispatch => {
-  dispatch(actions.fetchContactsRequest());
-
-  try {
+export const fetchContacts = createAsyncThunk(
+  'contacts/fetchContacts',
+  async () => {
     const { data } = await axios.get('/contacts');
-
-    dispatch(actions.fetchContactsSuccess(data));
-  } catch (error) {
-    dispatch(actions.fetchContactsError(error));
+    return data;
   }
+);
 
-  // .then(({ data }) => {
-  //   dispatch(actions.fetchContactsSuccess(data));
-  // })
-  // .catch(error => dispatch(actions.fetchContactsError(error)));
-};
+export const deleteContact = createAsyncThunk(
+  'contacts/deleteContact',
+  async contactId => {
+    const {
+      data: { id },
+    } = await axios.delete(`/contacts/${contactId}`);
+    return id;
+  }
+);
 
 const addContacts =
   ({ name, number: phone }) =>
@@ -47,14 +49,26 @@ const addContacts =
       .catch(error => dispatch(actions.addContactError(error)));
   };
 
-const deleteContact = contactId => dispatch => {
-  dispatch(actions.deleteContactRequest());
+// const fetchContacts = () => async dispatch => {
+//   dispatch(actions.fetchContactsRequest());
 
-  axios
-    .delete(`/contacts/${contactId}`)
-    .then(() => dispatch(actions.deleteContactSuccess(contactId)))
-    .catch(error => dispatch(actions.deleteContactError(error)));
-};
+//   try {
+//     const { data } = await axios.get('/contacts');
+
+//     dispatch(actions.fetchContactsSuccess(data));
+//   } catch (error) {
+//     dispatch(actions.fetchContactsError(error));
+//   }
+// };
+
+// const deleteContact = contactId => dispatch => {
+//   dispatch(actions.deleteContactRequest());
+
+// axios
+//   .delete(`/contacts/${contactId}`)
+//     .then(() => dispatch(actions.deleteContactSuccess(contactId)))
+//     .catch(error => dispatch(actions.deleteContactError(error)));
+// };
 
 const operations = { addContacts, deleteContact, fetchContacts };
 
