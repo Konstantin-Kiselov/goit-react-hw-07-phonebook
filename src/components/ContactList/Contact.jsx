@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import s from './ContactList.module.css';
 
-const Contact = ({ name, number, onClick }) => (
+const Contact = ({ name, number, phone, onClick }) => (
   <li className={s.item}>
     <p>
-      {name}: {number}
+      {name}: &nbsp;{number || phone}
     </p>
     <button type="button" className={s.button} onClick={onClick}>
       Delete
@@ -13,7 +13,8 @@ const Contact = ({ name, number, onClick }) => (
 );
 Contact.propTypes = {
   name: PropTypes.string.isRequired,
-  number: PropTypes.string.isRequired,
+  number: PropTypes.string,
+  phone: PropTypes.string,
   onClick: PropTypes.func.isRequired,
 };
 
