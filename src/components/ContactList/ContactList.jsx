@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import contactsOperations from '../../redux/contacts/contacts-operations';
+import {
+  fetchContacts,
+  deleteContact,
+} from '../../redux/contacts/contacts-operations';
 import PropTypes from 'prop-types';
 import Contact from './Contact';
 import s from './ContactList.module.css';
@@ -8,7 +11,7 @@ import s from './ContactList.module.css';
 const ContactList = ({ contacts, onDeleteContact, isLoading }) => {
   const dispatch = useDispatch();
 
-  useEffect(() => dispatch(contactsOperations.fetchContacts()), [dispatch]);
+  useEffect(() => dispatch(fetchContacts()), [dispatch]);
 
   return (
     <>
@@ -55,8 +58,8 @@ ContactList.propTypes = {
 const getVisibleContacts = (contacts, filter) => {
   const normalizedFilter = filter.toLowerCase();
 
-  return contacts.filter(({ name }) =>
-    name.toLowerCase().includes(normalizedFilter)
+  return contacts.filter(contact =>
+    contact.name.toLowerCase().includes(normalizedFilter)
   );
 };
 
@@ -66,7 +69,7 @@ const mapStateToProps = ({ contacts: { items, filter, loading } }) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onDeleteContact: id => dispatch(contactsOperations.deleteContact(id)),
+  onDeleteContact: id => dispatch(deleteContact(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactList);

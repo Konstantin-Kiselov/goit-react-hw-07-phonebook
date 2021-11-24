@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import * as actions from './contacts-actions';
+// import * as actions from './contacts-actions';
 
 axios.defaults.baseURL = 'https://619aa3d027827600174452d9.mockapi.io';
 
@@ -22,32 +22,42 @@ export const deleteContact = createAsyncThunk(
   }
 );
 
-const addContacts =
-  ({ name, number: phone }) =>
-  (dispatch, state) => {
-    const {
-      contacts: { items },
-    } = state();
+export const addContact = createAsyncThunk(
+  'contacts/addContact',
+  async ({ name, number: phone }) => {
+    const contact = { name, phone };
 
-    if (items.some(state => state.name === name)) {
-      alert(`${name} is already in contacts!`);
-      return state;
-    }
+    const { data } = await axios.post('/contacts', contact);
+    return data;
+  }
+);
 
-    const contact = {
-      name,
-      phone,
-    };
+// const addContacts =
+//   ({ name, number: phone }) =>
+//   (dispatch, state) => {
+//     const {
+//       contacts: { items },
+//     } = state();
 
-    dispatch(actions.addContactRequest());
+// if (items.some(state => state.name === name)) {
+//   alert(`${name} is already in contacts!`);
+//   return state;
+// }
 
-    axios
-      .post('/contacts', contact)
-      .then(({ data }) => {
-        return dispatch(actions.addContactSuccess(data));
-      })
-      .catch(error => dispatch(actions.addContactError(error)));
-  };
+//     const contact = {
+//       name,
+//       phone,
+//     };
+
+//     dispatch(actions.addContactRequest());
+
+//     axios
+//       .post('/contacts', contact)
+//       .then(({ data }) => {
+//         return dispatch(actions.addContactSuccess(data));
+//       })
+//       .catch(error => dispatch(actions.addContactError(error)));
+//   };
 
 // const fetchContacts = () => async dispatch => {
 //   dispatch(actions.fetchContactsRequest());
@@ -70,6 +80,6 @@ const addContacts =
 //     .catch(error => dispatch(actions.deleteContactError(error)));
 // };
 
-const operations = { addContacts, deleteContact, fetchContacts };
+// const operations = { addContact, deleteContact, fetchContacts };
 
-export default operations;
+// export default operations;
